@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/BlazorServerCPP.Server/BlazorServerCPP.Server.csproj" />
+    <Project Path="src/BlazorServerCPP.Shared/BlazorServerCPP.Shared.csproj" />
+  </Folder>
+</Solution>

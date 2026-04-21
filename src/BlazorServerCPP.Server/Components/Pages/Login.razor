@@ -1,0 +1,37 @@
+@page "/login"
+@page "/"
+
+<PageTitle>Login</PageTitle>
+
+<h1>Login</h1>
+
+@if (!string.IsNullOrEmpty(Error))
+{
+    <p role="alert">@Error</p>
+}
+
+@if (Registered == "1")
+{
+    <p>Registrazione completata. Ora puoi accedere.</p>
+}
+
+<form method="post" action="/auth/login">
+    <div>
+        <label for="username">Username o Email</label>
+        <input id="username" name="username" type="text" required autocomplete="username" />
+    </div>
+    <div>
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" required autocomplete="current-password" />
+    </div>
+    <button type="submit">Accedi</button>
+</form>
+
+<p>
+    Non hai un account? <a href="/register">Registrati</a>
+</p>
+
+@code {
+    [SupplyParameterFromQuery] public string? Error { get; set; }
+    [SupplyParameterFromQuery] public string? Registered { get; set; }
+}

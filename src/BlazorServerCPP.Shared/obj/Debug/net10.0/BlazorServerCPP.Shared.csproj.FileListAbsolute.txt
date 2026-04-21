@@ -1,0 +1,12 @@
+C:\Developers\BlazorServerCPP\src\BlazorServerCPP.Shared\bin\Debug\net10.0\BlazorServerCPP.Shared.deps.json
+C:\Developers\BlazorServerCPP\src\BlazorServerCPP.Shared\bin\Debug\net10.0\BlazorServerCPP.Shared.dll
+C:\Developers\BlazorServerCPP\src\BlazorServerCPP.Shared\bin\Debug\net10.0\BlazorServerCPP.Shared.pdb
+C:\Developers\BlazorServerCPP\src\BlazorServerCPP.Shared\obj\Debug\net10.0\BlazorServerCPP.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Developers\BlazorServerCPP\src\BlazorServerCPP.Shared\obj\Debug\net10.0\BlazorServerCPP.Shared.AssemblyInfoInputs.cache
+C:\Developers\BlazorServerCPP\src\BlazorServerCPP.Shared\obj\Debug\net10.0\BlazorServerCPP.Shared.AssemblyInfo.cs
+C:\Developers\BlazorServerCPP\src\BlazorServerCPP.Shared\obj\Debug\net10.0\BlazorServerCPP.Shared.csproj.CoreCompileInputs.cache
+C:\Developers\BlazorServerCPP\src\BlazorServerCPP.Shared\obj\Debug\net10.0\BlazorServerCPP.Shared.sourcelink.json
+C:\Developers\BlazorServerCPP\src\BlazorServerCPP.Shared\obj\Debug\net10.0\BlazorServerCPP.Shared.dll
+C:\Developers\BlazorServerCPP\src\BlazorServerCPP.Shared\obj\Debug\net10.0\refint\BlazorServerCPP.Shared.dll
+C:\Developers\BlazorServerCPP\src\BlazorServerCPP.Shared\obj\Debug\net10.0\BlazorServerCPP.Shared.pdb
+C:\Developers\BlazorServerCPP\src\BlazorServerCPP.Shared\obj\Debug\net10.0\ref\BlazorServerCPP.Shared.dll
