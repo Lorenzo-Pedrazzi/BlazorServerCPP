@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BlazorServerCPP")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+448ea8ac6c2b02961429b84e6e59afcf4633fbce")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f02b62d7d91020ad9ad045f9b7399be94295ce05")]
 [assembly: System.Reflection.AssemblyProductAttribute("BlazorServerCPP")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BlazorServerCPP")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
