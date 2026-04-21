@@ -2002,9 +2002,7 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\pedrazzi.lorenzo\\.nuget\\packages\\": {},
-    "C:\\Program Files\\DevExpress 23.2\\Components\\Offline Packages": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\pedrazzi.lorenzo\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
@@ -2015,11 +2013,8 @@
       "packagesPath": "C:\\Users\\pedrazzi.lorenzo\\.nuget\\packages\\",
       "outputPath": "C:\\Developers\\BlazorServerCPP\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files\\DevExpress 23.2\\Components\\Offline Packages",
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
+        "C:\\Developers\\BlazorServerCPP\\NuGet.Config",
         "C:\\Users\\pedrazzi.lorenzo\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 23.2.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
@@ -2029,8 +2024,6 @@
         "net10.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\DevExpress 23.2\\Components\\System\\Components\\Packages": {},
         "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
