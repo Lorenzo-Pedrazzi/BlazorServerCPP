@@ -1,0 +1,31 @@
+@page "/login"
+
+<PageTitle>Login</PageTitle>
+
+<h1>Login</h1>
+
+@if (Error == "invalid")
+{
+    <p><strong>Username o password non validi.</strong></p>
+}
+
+<form action="/auth/login" method="post">
+    <div>
+        <label for="username">Username</label><br />
+        <input type="text" id="username" name="username" required autofocus />
+    </div>
+    <div>
+        <label for="password">Password</label><br />
+        <input type="password" id="password" name="password" required />
+    </div>
+    <div>
+        <button type="submit">Accedi</button>
+    </div>
+</form>
+
+<p>Non hai un account? <a href="/register">Registrati</a></p>
+
+@code {
+    [SupplyParameterFromQuery(Name = "error")]
+    public string? Error { get; set; }
+}

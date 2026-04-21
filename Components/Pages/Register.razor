@@ -1,0 +1,39 @@
+@page "/register"
+
+<PageTitle>Registrazione</PageTitle>
+
+<h1>Registrazione</h1>
+
+@if (Error == "missing")
+{
+    <p><strong>Compila tutti i campi.</strong></p>
+}
+else if (Error == "short")
+{
+    <p><strong>La password deve avere almeno 6 caratteri.</strong></p>
+}
+else if (Error == "exists")
+{
+    <p><strong>Username già in uso.</strong></p>
+}
+
+<form action="/auth/register" method="post">
+    <div>
+        <label for="username">Username</label><br />
+        <input type="text" id="username" name="username" required autofocus />
+    </div>
+    <div>
+        <label for="password">Password</label><br />
+        <input type="password" id="password" name="password" required minlength="6" />
+    </div>
+    <div>
+        <button type="submit">Registrati</button>
+    </div>
+</form>
+
+<p>Hai già un account? <a href="/login">Accedi</a></p>
+
+@code {
+    [SupplyParameterFromQuery(Name = "error")]
+    public string? Error { get; set; }
+}
