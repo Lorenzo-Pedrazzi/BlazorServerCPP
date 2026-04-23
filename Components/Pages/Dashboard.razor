@@ -1,0 +1,63 @@
+﻿@page "/dashboard"
+@using Microsoft.EntityFrameworkCore
+@using Data
+@inject IDbContextFactory<AppDbContext> DbFactory
+
+
+<PageTitle>Dashboard</PageTitle>
+
+    <h3>Dashboard</h3>
+    <p>Elenco clienti con anagrafica e licenze. </p>
+
+    @if (clients == null)
+    {
+        <p>Caricamento...</p>
+    }
+    else
+    {
+        <div>
+            <ul>
+                @foreach (var c in clients)
+                {
+                    <li>
+                        <button @onclick="() => Toggle(c.IdCliente)">@(clientiAperti.Contains(c.IdCliente) ? "▼" : "▶")</button>
+                    @c.Nome
+                        @if (clientiAperti.Contains(c.IdCliente))
+                    {
+                            <ul>
+                                @foreach (var l in c.Licenzes)
+                                {
+                                    <li>
+                                        @l.IdLicenza -
+                                        @l.DataAttivazione?.ToString("dd/MM/yyyy")
+                                    </li>
+                                }
+                            </ul>
+                    }
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+
+@code {
+    private List<Clienti> clients;
+
+        
+    // Tiene traccia di quali clienti sono aperti
+    private HashSet<string> clientiAperti = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = await DbFactory.CreateDbContextAsync();
+        clients = await context.Clienti.Include(c => c.Licenzes).OrderBy(c => c.Nome).ToListAsync();
+    }
+
+    void Toggle(string idCliente)
+    {
+        if (clientiAperti.Contains(idCliente))
+            clientiAperti.Remove(idCliente);
+        else
+            clientiAperti.Add(idCliente);
+    }
+}

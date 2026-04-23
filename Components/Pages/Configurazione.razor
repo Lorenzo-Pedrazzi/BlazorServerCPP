@@ -1,0 +1,89 @@
+﻿@page "/configurazione"
+
+<div>
+    <div>
+        <h3>Configurazione dei permessi</h3>
+    </div>
+
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Pagina</th>
+                    @foreach (var r in ruoli)
+                    {
+                        <th>@r</th>
+                    }
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var p in permessi)
+                {
+                    <tr>
+                        <td>@p.Nome</td>
+
+                        @foreach (var r in ruoli)
+                        {
+                            <td style="text-align:center;">
+                                <input type="checkbox"
+                                       checked="@p.Ruoli[r]"
+                                       @onchange="() => Toggle(p, r)" />
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    List<string> ruoli = new() { "Admin", "Utente", "Installatore" };
+
+    List<Permesso> permessi = new()
+    {
+        new Permesso
+        {
+            Nome = "Dashboard",
+            Ruoli = new()
+            {
+                ["Admin"] = true,
+                ["Utente"] = true,
+                ["Installatore"] = true
+            }
+        },
+        new Permesso
+        {
+            Nome = "Configurazione",
+            Ruoli = new()
+            {
+                ["Admin"] = false,
+                ["Utente"] = false,
+                ["Installatore"] = true
+            }
+        },
+        new Permesso
+        {
+            Nome = "Log",
+            Ruoli = new()
+            {
+                ["Admin"] = false,
+                ["Utente"] = false,
+                ["Installatore"] = true
+            }
+        }
+    };
+
+    void Toggle(Permesso p, string ruolo)
+    {
+        p.Ruoli[ruolo] = !p.Ruoli[ruolo];
+    }
+}
+
+
+
+
+@code {
+
+}

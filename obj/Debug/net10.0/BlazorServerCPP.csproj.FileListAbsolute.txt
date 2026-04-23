@@ -123,10 +123,14 @@ C:\Developers\BlazorServerCPP\obj\Debug\net10.0\refint\BlazorServerCPP.dll
 C:\Developers\BlazorServerCPP\obj\Debug\net10.0\BlazorServerCPP.pdb
 C:\Developers\BlazorServerCPP\obj\Debug\net10.0\BlazorServerCPP.genruntimeconfig.cache
 C:\Developers\BlazorServerCPP\obj\Debug\net10.0\ref\BlazorServerCPP.dll
+C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\obj\Debug\net10.0\EmbeddedAttribute.cs
+C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\obj\Debug\net10.0\ValidatableTypeAttribute.cs
+C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\obj\Debug\net10.0\BlazorServerCPP.dll
+C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\obj\Debug\net10.0\refint\BlazorServerCPP.dll
+C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\obj\Debug\net10.0\BlazorServerCPP.pdb
 C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\bin\Debug\net10.0\appsettings.Development.json
 C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\bin\Debug\net10.0\appsettings.json
 C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\bin\Debug\net10.0\nuget.config
-C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\bin\Debug\net10.0\specs\licence-api.json
 C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\bin\Debug\net10.0\BlazorServerCPP.staticwebassets.runtime.json
 C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\bin\Debug\net10.0\BlazorServerCPP.staticwebassets.endpoints.json
 C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\bin\Debug\net10.0\BlazorServerCPP.exe
@@ -222,8 +226,6 @@ C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\bin\Debug\net10.0\ru\Microsof
 C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\bin\Debug\net10.0\tr\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\bin\Debug\net10.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\bin\Debug\net10.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\obj\Debug\net10.0\EmbeddedAttribute.cs
-C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\obj\Debug\net10.0\ValidatableTypeAttribute.cs
 C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\obj\Debug\net10.0\BlazorServerCPP.csproj.AssemblyReference.cache
 C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\obj\Debug\net10.0\rpswa.dswa.cache.json
 C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\obj\Debug\net10.0\BlazorServerCPP.GeneratedMSBuildEditorConfig.editorconfig
@@ -243,10 +245,8 @@ C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\obj\Debug\net10.0\staticwebas
 C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\obj\Debug\net10.0\staticwebassets.development.json
 C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\obj\Debug\net10.0\staticwebassets.build.endpoints.json
 C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\obj\Debug\net10.0\swae.build.ex.cache
-C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
 C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\obj\Debug\net10.0\BlazorSe.0FAB28F3.Up2Date
-C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\obj\Debug\net10.0\BlazorServerCPP.dll
-C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\obj\Debug\net10.0\refint\BlazorServerCPP.dll
-C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\obj\Debug\net10.0\BlazorServerCPP.pdb
 C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\obj\Debug\net10.0\BlazorServerCPP.genruntimeconfig.cache
 C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\obj\Debug\net10.0\ref\BlazorServerCPP.dll
+C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\obj\Debug\net10.0\compressed\ygd1a6r41m-{0}-dyjx89twm7-dyjx89twm7.gz
+C:\Users\Roli.Vanessa\source\repos\BlazorServerCPP\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
