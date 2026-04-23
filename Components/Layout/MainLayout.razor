@@ -1,3 +1,48 @@
 @inherits LayoutComponentBase
+<div class="layout">
 
-@Body
+    <!-- MENU A SINISTRA -->
+    <div class="sidebar">
+        <nav>
+            <ul>
+                <li><NavLink href="/dashboard">Dashboard</NavLink></li>
+                <li><NavLink href="/configurazione">Configurazione</NavLink></li>
+                <li><NavLink href="/log">Log</NavLink></li>
+            </ul>
+        </nav>
+    </div>
+    
+    <!-- CONTENUTO -->
+    <div class="content">
+        @Body
+    </div>
+
+</div>
+
+<style>
+    .layout {
+        display: flex;
+        height: 100vh;
+    }
+
+    .content {
+        flex: 1;
+        padding: 20px;
+    }
+
+    .sidebar {
+        width: 200px;
+        background-color: #f0f0f0;
+        padding: 15px;
+        border-left: 1px solid #ccc;
+    }
+
+    .sidebar ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .sidebar li {
+        margin-bottom: 10px;
+    }
+</style>
