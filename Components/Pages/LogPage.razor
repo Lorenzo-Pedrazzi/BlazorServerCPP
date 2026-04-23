@@ -1,0 +1,46 @@
+﻿@page "/log"
+
+<div>
+    <h3>Pagina di log</h3>
+    <button @onclick="Esporta">Esporta (txt)</button>
+</div>
+
+<div>
+    <table>
+        <thead>
+            <tr>
+                <th>Tipo di log</th>
+                <th>Contenuto</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var log in logs)
+            {
+                <tr>
+                    <td>@log.Tipo</td>
+                    <td>@log.Contenuto</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private List<Log> logs;
+
+    protected override void OnInitialized()
+    {
+        logs = new List<Log> 
+        {
+            new Log { Tipo = "Info", Contenuto = "Sistema avviato" },
+            new Log { Tipo = "Warning", Contenuto = "Connessione lenta" },
+            new Log { Tipo = "Error", Contenuto = "File non trovato" }
+        };
+    }
+
+    void Esporta()
+    {
+        // logica export
+    }
+
+}

@@ -7,7 +7,9 @@
     <HeadOutlet />
 </head>
 <body>
-    <Routes />
+    @* routes statico non rende interagibili le pagine. usare il comando che segue.  *@
+    @* <Routes /> *@
+    <Routes @rendermode="RenderMode.InteractiveServer" />
     <script src="_framework/blazor.web.js"></script>
 </body>
 </html>
