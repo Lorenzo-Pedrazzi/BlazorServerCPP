@@ -2002,21 +2002,20 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\pedrazzi.lorenzo\\.nuget\\packages\\": {}
+    "C:\\Users\\Roli.Vanessa\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Developers\\BlazorServerCPP\\BlazorServerCPP.csproj",
+      "projectUniqueName": "C:\\Users\\Roli.Vanessa\\source\\repos\\BlazorServerCPP\\BlazorServerCPP.csproj",
       "projectName": "BlazorServerCPP",
-      "projectPath": "C:\\Developers\\BlazorServerCPP\\BlazorServerCPP.csproj",
-      "packagesPath": "C:\\Users\\pedrazzi.lorenzo\\.nuget\\packages\\",
-      "outputPath": "C:\\Developers\\BlazorServerCPP\\obj\\",
+      "projectPath": "C:\\Users\\Roli.Vanessa\\source\\repos\\BlazorServerCPP\\BlazorServerCPP.csproj",
+      "packagesPath": "C:\\Users\\Roli.Vanessa\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Roli.Vanessa\\source\\repos\\BlazorServerCPP\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Developers\\BlazorServerCPP\\NuGet.Config",
-        "C:\\Users\\pedrazzi.lorenzo\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 23.2.config",
+        "C:\\Users\\Roli.Vanessa\\source\\repos\\BlazorServerCPP\\NuGet.Config",
+        "C:\\Users\\Roli.Vanessa\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -2029,6 +2028,7 @@
       },
       "frameworks": {
         "net10.0": {
+          "framework": "net10.0",
           "targetAlias": "net10.0",
           "projectReferences": {}
         }
@@ -2047,6 +2047,7 @@
     },
     "frameworks": {
       "net10.0": {
+        "framework": "net10.0",
         "targetAlias": "net10.0",
         "dependencies": {
           "Microsoft.AspNetCore.App.Internal.Assets": {

@@ -1,0 +1,285 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Licence API",
+    "description": "API per la gestione delle licenze del client. Espone attivazione, rilascio di una nuova licenza e verifica dello stato corrente.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://localhost:5001",
+      "description": "Server locale di sviluppo"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Licence",
+      "description": "Operazioni sulle licenze"
+    }
+  ],
+  "paths": {
+    "/api/licence/activate": {
+      "post": {
+        "tags": ["Licence"],
+        "operationId": "ActivateLicence",
+        "summary": "Attiva la licenza del cliente alla prima comunicazione col server",
+        "description": "Invocata la prima volta che il client comunica col server. Genera una nuova licenza associata al cliente, con identificativo alfanumerico composto da numero commessa (LDK) + data/ora di attivazione + id cliente, e scadenza calcolata dal server.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActivateLicenceRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Licenza attivata con successo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Licenza"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Richiesta non valida",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "Cliente non trovato",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "Una licenza attiva esiste gia' per il cliente",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/licence/new": {
+      "post": {
+        "tags": ["Licence"],
+        "operationId": "GetNewLicence",
+        "summary": "Rilascia una nuova licenza al cliente come file da scaricare",
+        "description": "Invocata dal client per ottenere una nuova licenza (p.es. dopo scadenza e pagamento avvenuto). Il server genera il file di licenza in locale e lo restituisce al client come download binario. I metadati della licenza (id, scadenza, pagato) vengono propagati tramite response header, mentre il body contiene il file stesso.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetNewLicenceRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "File di licenza generato",
+            "headers": {
+              "Content-Disposition": {
+                "description": "Nome del file di licenza proposto per il salvataggio",
+                "schema": {
+                  "type": "string",
+                  "example": "attachment; filename=\"LDK-2026-0001-20260422T143000-CUST-042.lic\""
+                }
+              },
+              "X-Licence-Id": {
+                "description": "Identificativo alfanumerico della licenza contenuta nel file",
+                "schema": { "type": "string" }
+              },
+              "X-Licence-Scadenza": {
+                "description": "Data/ora di scadenza della licenza (ISO 8601)",
+                "schema": { "type": "string", "format": "date-time" }
+              },
+              "X-Licence-Pagato": {
+                "description": "Indica se la licenza e' stata pagata",
+                "schema": { "type": "boolean" }
+              }
+            },
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary",
+                  "description": "Contenuto del file di licenza generato dal server"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Richiesta non valida",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "402": {
+            "description": "Licenza precedente non pagata, nuova emissione non consentita",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "Cliente non trovato",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/licence/state": {
+      "get": {
+        "tags": ["Licence"],
+        "operationId": "CheckLicenceState",
+        "summary": "Verifica lo stato corrente di una licenza",
+        "description": "Restituisce lo stato della licenza identificata da licenceId: validita', data di scadenza, flag di pagamento. Puo' essere usata anche come heartbeat del client (monitoraggio ogni 5 minuti).",
+        "parameters": [
+          {
+            "name": "licenceId",
+            "in": "query",
+            "required": true,
+            "description": "Identificativo alfanumerico della licenza",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stato della licenza",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LicenceStateResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Licenza non trovata",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ActivateLicenceRequest": {
+        "type": "object",
+        "required": ["clientId", "numeroCommessa"],
+        "properties": {
+          "clientId": {
+            "type": "string",
+            "description": "Identificativo del cliente"
+          },
+          "numeroCommessa": {
+            "type": "string",
+            "description": "Numero di commessa LDK, entra nella composizione dell'ID licenza",
+            "example": "LDK-2026-0001"
+          }
+        }
+      },
+      "GetNewLicenceRequest": {
+        "type": "object",
+        "required": ["clientId"],
+        "properties": {
+          "clientId": {
+            "type": "string",
+            "description": "Identificativo del cliente che richiede la nuova licenza"
+          },
+          "previousLicenceId": {
+            "type": "string",
+            "description": "Identificativo della licenza precedente (opzionale, utile per tracciamento)"
+          }
+        }
+      },
+      "Licenza": {
+        "type": "object",
+        "required": ["id", "scadenza", "pagato"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identificativo alfanumerico: numeroCommessa (LDK) + data/ora attivazione + idCliente",
+            "example": "LDK-2026-0001-20260422T143000-CUST-042"
+          },
+          "scadenza": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data/ora di scadenza della licenza (2h o 11min dopo l'attivazione)"
+          },
+          "pagato": {
+            "type": "boolean",
+            "description": "Indica se la licenza e' stata pagata"
+          }
+        }
+      },
+      "LicenceStateResponse": {
+        "type": "object",
+        "required": ["id", "scadenza", "pagato", "scaduta"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identificativo alfanumerico della licenza"
+          },
+          "scadenza": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data/ora di scadenza"
+          },
+          "pagato": {
+            "type": "boolean",
+            "description": "Licenza pagata"
+          },
+          "scaduta": {
+            "type": "boolean",
+            "description": "True se la scadenza e' gia' passata al momento della risposta"
+          },
+          "serverTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Istante del server al momento della verifica"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["code", "message"],
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Codice errore applicativo"
+          },
+          "message": {
+            "type": "string",
+            "description": "Descrizione leggibile dell'errore"
+          }
+        }
+      }
+    }
+  }
+}
