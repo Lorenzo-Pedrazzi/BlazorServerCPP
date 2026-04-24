@@ -191,12 +191,16 @@
     "schemas": {
       "ActivateLicenceRequest": {
         "type": "object",
-        "required": ["clientId", "numeroCommessa"],
+        "required": ["clientId", "impiantoId", "numeroCommessa"],
         "properties": {
           "clientId": {
             "type": "string",
             "description": "Identificativo del cliente"
           },
+          "impiantoId": {
+            "type": "int", 
+            "description":  "Identificativo dell'impianto"
+          }, 
           "numeroCommessa": {
             "type": "string",
             "description": "Numero di commessa LDK, entra nella composizione dell'ID licenza",
@@ -206,11 +210,19 @@
       },
       "GetNewLicenceRequest": {
         "type": "object",
-        "required": ["clientId"],
+        "required": ["clientId", "impiantoId", "commessa"],
         "properties": {
           "clientId": {
             "type": "string",
             "description": "Identificativo del cliente che richiede la nuova licenza"
+          },
+          "impiantoId": {
+            "type": "integer",
+            "description": "Identificativo dell'impianto"
+          },
+          "commessa": {
+            "type": "string",
+            "description": "Codice commessa associato alla richiesta"
           },
           "previousLicenceId": {
             "type": "string",
