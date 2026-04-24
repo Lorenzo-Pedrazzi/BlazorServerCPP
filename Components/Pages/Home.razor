@@ -1,12 +1,14 @@
 @page "/"
-@attribute [Authorize]
 
 <PageTitle>Home</PageTitle>
 
-<AuthorizeView>
-    <h1>Benvenuto, @context.User.Identity?.Name</h1>
-</AuthorizeView>
+<div class="page-header">
+    <h1>Home</h1>
+</div>
 
-<form action="/auth/logout" method="post">
-    <button type="submit">Logout</button>
-</form>
+<AuthorizeView>
+    <div class="card">
+        <h3>Benvenuto, @context.User.Identity?.Name</h3>
+        <p>Usa il menu a sinistra per accedere alle sezioni dell'applicazione.</p>
+    </div>
+</AuthorizeView>

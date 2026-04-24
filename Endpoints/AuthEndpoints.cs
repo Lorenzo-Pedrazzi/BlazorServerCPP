@@ -13,27 +13,40 @@ public static class AuthEndpoints
 {
     public static void MapAuthEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/auth").DisableAntiforgery();
+        var group = app.MapGroup("/auth").DisableAntiforgery().AllowAnonymous();
 
         group.MapPost("/register", async (
             HttpContext ctx,
             AppDbContext db,
-            IPasswordHasher<User> hasher,
+            IPasswordHasher<Utenti> hasher,
             [FromForm] string username,
-            [FromForm] string password) =>
+            [FromForm] string email,
+            [FromForm] string password,
+            [FromForm] string confirmPassword) =>
         {
-            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+            if (string.IsNullOrWhiteSpace(username) ||
+                string.IsNullOrWhiteSpace(email) ||
+                string.IsNullOrWhiteSpace(password))
                 return Results.Redirect("/register?error=missing");
 
             if (password.Length < 6)
                 return Results.Redirect("/register?error=short");
 
-            if (await db.Users.AnyAsync(u => u.Username == username))
+            if (password != confirmPassword)
+                return Results.Redirect("/register?error=mismatch");
+
+            if (await db.Utenti.AnyAsync(u => u.Username == username || u.Email == email))
                 return Results.Redirect("/register?error=exists");
 
-            var user = new User { Username = username };
+            var user = new Utenti
+            {
+                Username = username,
+                Email = email,
+                Ruolo = "user",
+                DataCreazione = DateTime.UtcNow
+            };
             user.PasswordHash = hasher.HashPassword(user, password);
-            db.Users.Add(user);
+            db.Utenti.Add(user);
             await db.SaveChangesAsync();
 
             await SignIn(ctx, user);
@@ -43,26 +56,40 @@ public static class AuthEndpoints
         group.MapPost("/login", async (
             HttpContext ctx,
             AppDbContext db,
-            IPasswordHasher<User> hasher,
+            IPasswordHasher<Utenti> hasher,
             [FromForm] string username,
-            [FromForm] string password) =>
+            [FromForm] string password,
+            [FromForm] string? returnUrl) =>
         {
-            var user = await db.Users.FirstOrDefaultAsync(u => u.Username == username);
-            if (user is null)
-                return Results.Redirect("/login?error=invalid");
+            var safeReturn = SanitizeReturnUrl(returnUrl);
 
-            var result = hasher.VerifyHashedPassword(user, user.PasswordHash, password);
+            var user = await db.Utenti.FirstOrDefaultAsync(u => u.Username == username);
+            if (user is null)
+                return Results.Redirect($"/login?error=invalid&returnUrl={Uri.EscapeDataString(safeReturn)}");
+
+            PasswordVerificationResult result;
+            try
+            {
+                result = hasher.VerifyHashedPassword(user, user.PasswordHash, password);
+            }
+            catch (FormatException)
+            {
+                // Hash legacy non nel formato di PasswordHasher<T> (es. utenti storici del CPP).
+                result = PasswordVerificationResult.Failed;
+            }
+
             if (result == PasswordVerificationResult.Failed)
-                return Results.Redirect("/login?error=invalid");
+                return Results.Redirect($"/login?error=invalid&returnUrl={Uri.EscapeDataString(safeReturn)}");
 
             if (result == PasswordVerificationResult.SuccessRehashNeeded)
             {
                 user.PasswordHash = hasher.HashPassword(user, password);
-                await db.SaveChangesAsync();
             }
+            user.DataUltimoLogin = DateTime.UtcNow;
+            await db.SaveChangesAsync();
 
             await SignIn(ctx, user);
-            return Results.Redirect("/");
+            return Results.Redirect(safeReturn);
         });
 
         group.MapPost("/logout", async (HttpContext ctx) =>
@@ -72,12 +99,20 @@ public static class AuthEndpoints
         });
     }
 
-    private static Task SignIn(HttpContext ctx, User user)
+    private static string SanitizeReturnUrl(string? url)
+    {
+        if (string.IsNullOrWhiteSpace(url)) return "/";
+        if (!url.StartsWith('/') || url.StartsWith("//")) return "/";
+        return url;
+    }
+
+    private static Task SignIn(HttpContext ctx, Utenti user)
     {
         var claims = new[]
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.Username)
+            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.Role, user.Ruolo ?? "user")
         };
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         return ctx.SignInAsync(

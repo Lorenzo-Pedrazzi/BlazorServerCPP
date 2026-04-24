@@ -1,39 +1,90 @@
 @page "/register"
+@layout EmptyLayout
+@attribute [AllowAnonymous]
 
 <PageTitle>Registrazione</PageTitle>
 
-<h1>Registrazione</h1>
+<div class="auth-shell">
+    <div class="form">
+        <h1>Crea account</h1>
 
-@if (Error == "missing")
-{
-    <p><strong>Compila tutti i campi.</strong></p>
-}
-else if (Error == "short")
-{
-    <p><strong>La password deve avere almeno 6 caratteri.</strong></p>
-}
-else if (Error == "exists")
-{
-    <p><strong>Username già in uso.</strong></p>
-}
+        @if (Error == "missing")
+        {
+            <div class="alert alert-error">Compila tutti i campi.</div>
+        }
+        else if (Error == "short")
+        {
+            <div class="alert alert-error">La password deve avere almeno 6 caratteri.</div>
+        }
+        else if (Error == "mismatch")
+        {
+            <div class="alert alert-error">Le due password non coincidono.</div>
+        }
+        else if (Error == "exists")
+        {
+            <div class="alert alert-error">Username o email già in uso.</div>
+        }
 
-<form action="/auth/register" method="post">
-    <div>
-        <label for="username">Username</label><br />
-        <input type="text" id="username" name="username" required autofocus />
-    </div>
-    <div>
-        <label for="password">Password</label><br />
-        <input type="password" id="password" name="password" required minlength="6" />
-    </div>
-    <div>
-        <button type="submit">Registrati</button>
-    </div>
-</form>
+        <form action="/auth/register" method="post">
+            <div class="form-row">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username"
+                       @bind="username" @bind:event="oninput"
+                       required autofocus autocomplete="username" minlength="3" />
+                @if (!string.IsNullOrEmpty(username) && username.Length < 3)
+                {
+                    <div class="hint" style="color: var(--danger)">Minimo 3 caratteri.</div>
+                }
+            </div>
 
-<p>Hai già un account? <a href="/login">Accedi</a></p>
+            <div class="form-row">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email"
+                       @bind="email" @bind:event="oninput"
+                       required autocomplete="email" />
+            </div>
+
+            <div class="form-row">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password"
+                       @bind="password" @bind:event="oninput"
+                       required autocomplete="new-password" minlength="6" />
+                @if (!string.IsNullOrEmpty(password))
+                {
+                    <div class="hint" style="color: @(password.Length >= 6 ? "var(--success)" : "var(--danger)")">
+                        @(password.Length >= 6 ? "✓ Lunghezza adeguata" : $"Minimo 6 caratteri (mancano {6 - password.Length}).")
+                    </div>
+                }
+            </div>
+
+            <div class="form-row">
+                <label for="confirmPassword">Conferma password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword"
+                       @bind="confirmPassword" @bind:event="oninput"
+                       required autocomplete="new-password" />
+                @if (!string.IsNullOrEmpty(confirmPassword))
+                {
+                    <div class="hint" style="color: @(confirmPassword == password ? "var(--success)" : "var(--danger)")">
+                        @(confirmPassword == password ? "✓ Le password coincidono" : "Le password non coincidono.")
+                    </div>
+                }
+            </div>
+
+            <button type="submit" class="btn-block">Registrati</button>
+        </form>
+
+        <div class="footer-link">
+            Hai già un account? <a href="/login">Accedi</a>
+        </div>
+    </div>
+</div>
 
 @code {
     [SupplyParameterFromQuery(Name = "error")]
     public string? Error { get; set; }
+
+    private string username = string.Empty;
+    private string email = string.Empty;
+    private string password = string.Empty;
+    private string confirmPassword = string.Empty;
 }

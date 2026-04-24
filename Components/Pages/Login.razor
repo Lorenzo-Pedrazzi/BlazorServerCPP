@@ -1,31 +1,44 @@
 @page "/login"
+@layout EmptyLayout
+@attribute [AllowAnonymous]
 
 <PageTitle>Login</PageTitle>
 
-<h1>Login</h1>
+<div class="auth-shell">
+    <div class="form">
+        <h1>Accedi</h1>
 
-@if (Error == "invalid")
-{
-    <p><strong>Username o password non validi.</strong></p>
-}
+        @if (Error == "invalid")
+        {
+            <div class="alert alert-error">Username o password non validi.</div>
+        }
 
-<form action="/auth/login" method="post">
-    <div>
-        <label for="username">Username</label><br />
-        <input type="text" id="username" name="username" required autofocus />
-    </div>
-    <div>
-        <label for="password">Password</label><br />
-        <input type="password" id="password" name="password" required />
-    </div>
-    <div>
-        <button type="submit">Accedi</button>
-    </div>
-</form>
+        <form action="/auth/login" method="post">
+            <input type="hidden" name="returnUrl" value="@(ReturnUrl ?? "/")" />
 
-<p>Non hai un account? <a href="/register">Registrati</a></p>
+            <div class="form-row">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required autofocus autocomplete="username" />
+            </div>
+
+            <div class="form-row">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required autocomplete="current-password" />
+            </div>
+
+            <button type="submit" class="btn-block">Accedi</button>
+        </form>
+
+        <div class="footer-link">
+            Non hai un account? <a href="/register">Registrati</a>
+        </div>
+    </div>
+</div>
 
 @code {
     [SupplyParameterFromQuery(Name = "error")]
     public string? Error { get; set; }
+
+    [SupplyParameterFromQuery(Name = "returnUrl")]
+    public string? ReturnUrl { get; set; }
 }

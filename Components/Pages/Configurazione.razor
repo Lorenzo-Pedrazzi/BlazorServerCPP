@@ -1,89 +1,153 @@
-﻿@page "/configurazione"
+@page "/configurazione"
+@using Microsoft.EntityFrameworkCore
+@using BlazorServerCPP.Data
+@using BlazorServerCPP.Models
+@using BlazorServerCPP.Services
+@inject IDbContextFactory<AppDbContext> DbFactory
+@inject PermissionsService Perms
 
-<div>
-    <div>
-        <h3>Configurazione dei permessi</h3>
-    </div>
+<PageTitle>Configurazione</PageTitle>
 
-    <div>
+<div class="page-header">
+    <h1>Configurazione</h1>
+</div>
+
+<div class="card">
+    <h3>Permessi per ruolo</h3>
+    <p class="muted">Spunta le pagine che ciascun ruolo può vedere. Le modifiche vengono salvate subito (in memoria).</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Pagina</th>
+                @foreach (var r in Perms.Ruoli)
+                {
+                    <th class="center">@PermissionsService.Display(r)</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var pagina in Perms.Pagine)
+            {
+                <tr>
+                    <td><strong>@pagina</strong></td>
+                    @foreach (var ruolo in Perms.Ruoli)
+                    {
+                        var p = pagina;
+                        var r = ruolo;
+                        <td class="center">
+                            <input type="checkbox"
+                                   checked="@Perms.IsAllowed(p, r)"
+                                   @onchange="e => TogglePerm(p, r, e)" />
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <h3>Assegnazione ruolo agli utenti</h3>
+    <p class="muted">
+        Il ruolo è persistito nella colonna <code>ruolo</code> della tabella <code>utenti</code>.
+        Valori ammessi dal check constraint: <code>admin</code>, <code>user</code>, <code>installatore</code>.
+    </p>
+
+    @if (utenti is null)
+    {
+        <p>Caricamento utenti…</p>
+    }
+    else if (utenti.Count == 0)
+    {
+        <div class="alert alert-info">Nessun utente registrato.</div>
+    }
+    else
+    {
+        @if (!string.IsNullOrEmpty(feedback))
+        {
+            <div class="alert alert-success">@feedback</div>
+        }
+
         <table>
             <thead>
                 <tr>
-                    <th>Pagina</th>
-                    @foreach (var r in ruoli)
-                    {
-                        <th>@r</th>
-                    }
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Registrato il</th>
+                    <th>Ruolo attuale</th>
+                    <th style="width: 220px;">Cambia ruolo</th>
                 </tr>
             </thead>
-
             <tbody>
-                @foreach (var p in permessi)
+                @foreach (var u in utenti)
                 {
+                    var ruoloCorrente = Normalize(u.Ruolo);
+                    var capturedId = u.Id;
                     <tr>
-                        <td>@p.Nome</td>
-
-                        @foreach (var r in ruoli)
-                        {
-                            <td style="text-align:center;">
-                                <input type="checkbox"
-                                       checked="@p.Ruoli[r]"
-                                       @onchange="() => Toggle(p, r)" />
-                            </td>
-                        }
+                        <td><strong>@u.Username</strong></td>
+                        <td>@u.Email</td>
+                        <td>@u.DataCreazione.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                        <td><span class="badge badge-@ruoloCorrente">@PermissionsService.Display(ruoloCorrente)</span></td>
+                        <td>
+                            <select @onchange="e => ChangeRole(capturedId, e)">
+                                @foreach (var r in Perms.Ruoli)
+                                {
+                                    <option value="@r" selected="@(r == ruoloCorrente)">@PermissionsService.Display(r)</option>
+                                }
+                            </select>
+                        </td>
                     </tr>
                 }
             </tbody>
         </table>
-    </div>
+    }
 </div>
 
 @code {
-    List<string> ruoli = new() { "Admin", "Utente", "Installatore" };
+    private List<Utenti>? utenti;
+    private string? feedback;
 
-    List<Permesso> permessi = new()
+    protected override async Task OnInitializedAsync()
     {
-        new Permesso
-        {
-            Nome = "Dashboard",
-            Ruoli = new()
-            {
-                ["Admin"] = true,
-                ["Utente"] = true,
-                ["Installatore"] = true
-            }
-        },
-        new Permesso
-        {
-            Nome = "Configurazione",
-            Ruoli = new()
-            {
-                ["Admin"] = false,
-                ["Utente"] = false,
-                ["Installatore"] = true
-            }
-        },
-        new Permesso
-        {
-            Nome = "Log",
-            Ruoli = new()
-            {
-                ["Admin"] = false,
-                ["Utente"] = false,
-                ["Installatore"] = true
-            }
-        }
-    };
-
-    void Toggle(Permesso p, string ruolo)
-    {
-        p.Ruoli[ruolo] = !p.Ruoli[ruolo];
+        await LoadUtenti();
     }
-}
 
+    private async Task LoadUtenti()
+    {
+        await using var db = await DbFactory.CreateDbContextAsync();
+        utenti = await db.Utenti.OrderBy(u => u.Username).ToListAsync();
+    }
 
+    private void TogglePerm(string pagina, string ruolo, ChangeEventArgs e)
+    {
+        var allowed = e.Value is bool b && b;
+        Perms.SetPermission(pagina, ruolo, allowed);
+    }
 
+    private async Task ChangeRole(int userId, ChangeEventArgs e)
+    {
+        var nuovoRuolo = e.Value?.ToString();
+        if (string.IsNullOrEmpty(nuovoRuolo) || !Perms.Ruoli.Contains(nuovoRuolo))
+            return;
 
-@code {
+        await using var db = await DbFactory.CreateDbContextAsync();
+        var u = await db.Utenti.FirstOrDefaultAsync(x => x.Id == userId);
+        if (u is null) return;
 
+        u.Ruolo = nuovoRuolo;
+        await db.SaveChangesAsync();
+
+        feedback = $"Ruolo di '{u.Username}' aggiornato a {nuovoRuolo}.";
+        await LoadUtenti();
+    }
+
+    private string Normalize(string? ruolo)
+    {
+        if (string.IsNullOrWhiteSpace(ruolo)) return "user";
+        foreach (var r in Perms.Ruoli)
+            if (string.Equals(r, ruolo, StringComparison.OrdinalIgnoreCase))
+                return r;
+        return "user";
+    }
 }
