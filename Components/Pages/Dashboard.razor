@@ -1,63 +1,73 @@
-﻿@page "/dashboard"
+@page "/dashboard"
 @using Microsoft.EntityFrameworkCore
-@using Data
+@using BlazorServerCPP.Data
 @inject IDbContextFactory<AppDbContext> DbFactory
-
 
 <PageTitle>Dashboard</PageTitle>
 
-    <h3>Dashboard</h3>
-    <p>Elenco clienti con anagrafica e licenze. </p>
+<div class="page-header">
+    <h1>Dashboard</h1>
+</div>
+
+<div class="card">
+    <h3>Elenco clienti</h3>
+    <p class="muted">Espandi un cliente per vedere le licenze associate.</p>
 
     @if (clients == null)
     {
-        <p>Caricamento...</p>
+        <p>Caricamento…</p>
+    }
+    else if (clients.Count == 0)
+    {
+        <div class="alert alert-info">Nessun cliente trovato.</div>
     }
     else
     {
-        <div>
-            <ul>
-                @foreach (var c in clients)
-                {
-                    <li>
-                        <button @onclick="() => Toggle(c.IdCliente)">@(clientiAperti.Contains(c.IdCliente) ? "▼" : "▶")</button>
-                    @c.Nome
-                        @if (clientiAperti.Contains(c.IdCliente))
+        <ul class="tree">
+            @foreach (var c in clients)
+            {
+                <li>
+                    <button @onclick="() => Toggle(c.IdCliente)">
+                        @(clientiAperti.Contains(c.IdCliente) ? "▼" : "▶") <strong>@c.Nome</strong>
+                    </button>
+                    @if (clientiAperti.Contains(c.IdCliente))
                     {
-                            <ul>
+                        <ul>
+                            @if (!c.Licenzes.Any())
+                            {
+                                <li class="muted">Nessuna licenza.</li>
+                            }
+                            else
+                            {
                                 @foreach (var l in c.Licenzes)
                                 {
                                     <li>
-                                        @l.IdLicenza -
-                                        @l.DataAttivazione?.ToString("dd/MM/yyyy")
+                                        <code>@l.IdLicenza</code>
+                                        &mdash; attivata il @l.DataAttivazione?.ToString("dd/MM/yyyy")
                                     </li>
                                 }
-                            </ul>
+                            }
+                        </ul>
                     }
-                    </li>
-                }
-            </ul>
-        </div>
+                </li>
+            }
+        </ul>
     }
+</div>
 
 @code {
-    private List<Clienti> clients;
-
-        
-    // Tiene traccia di quali clienti sono aperti
+    private List<BlazorServerCPP.Models.Clienti>? clients;
     private HashSet<string> clientiAperti = new();
 
     protected override async Task OnInitializedAsync()
     {
-        using var context = await DbFactory.CreateDbContextAsync();
-        clients = await context.Clienti.Include(c => c.Licenzes).OrderBy(c => c.Nome).ToListAsync();
+        await using var db = await DbFactory.CreateDbContextAsync();
+        clients = await db.Clienti.Include(c => c.Licenzes).OrderBy(c => c.Nome).ToListAsync();
     }
 
-    void Toggle(string idCliente)
+    private void Toggle(string idCliente)
     {
-        if (clientiAperti.Contains(idCliente))
+        if (!clientiAperti.Add(idCliente))
             clientiAperti.Remove(idCliente);
-        else
-            clientiAperti.Add(idCliente);
     }
 }

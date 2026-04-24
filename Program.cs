@@ -3,7 +3,9 @@ using BlazorServerCPP.Components;
 using BlazorServerCPP.Data;
 using BlazorServerCPP.Endpoints;
 using BlazorServerCPP.Models;
+using BlazorServerCPP.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,7 +17,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddDbContextFactory<AppDbContext>(opts =>
     opts.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+builder.Services.AddScoped<IPasswordHasher<Utenti>, PasswordHasher<Utenti>>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -28,16 +30,17 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.SlidingExpiration = true;
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+});
 builder.Services.AddCascadingAuthenticationState();
 
-var app = builder.Build();
+builder.Services.AddSingleton<PermissionsService>();
 
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.EnsureCreated();
-}
+var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
 {
@@ -56,5 +59,6 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
 app.MapAuthEndpoints();
+app.MapLicenceEndpoints();
 
 app.Run();

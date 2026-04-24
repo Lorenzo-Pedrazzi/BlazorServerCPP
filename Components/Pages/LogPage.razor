@@ -1,23 +1,30 @@
-﻿@page "/log"
+@page "/log"
+@using BlazorServerCPP.Models
 
-<div>
-    <h3>Pagina di log</h3>
+<PageTitle>Log</PageTitle>
+
+<div class="page-header">
+    <h1>Log</h1>
     <button @onclick="Esporta">Esporta (txt)</button>
 </div>
 
-<div>
+<div class="card">
     <table>
         <thead>
             <tr>
-                <th>Tipo di log</th>
+                <th style="width: 120px;">Tipo</th>
                 <th>Contenuto</th>
             </tr>
         </thead>
         <tbody>
-            @foreach(var log in logs)
+            @foreach (var log in logs)
             {
                 <tr>
-                    <td>@log.Tipo</td>
+                    <td>
+                        <span class="badge badge-@(log.Tipo.ToLower() == "error" ? "admin" : log.Tipo.ToLower() == "warning" ? "installatore" : "user")">
+                            @log.Tipo
+                        </span>
+                    </td>
                     <td>@log.Contenuto</td>
                 </tr>
             }
@@ -26,21 +33,20 @@
 </div>
 
 @code {
-    private List<Log> logs;
+    private List<Log> logs = new();
 
     protected override void OnInitialized()
     {
-        logs = new List<Log> 
+        logs = new List<Log>
         {
-            new Log { Tipo = "Info", Contenuto = "Sistema avviato" },
+            new Log { Tipo = "Info",    Contenuto = "Sistema avviato" },
             new Log { Tipo = "Warning", Contenuto = "Connessione lenta" },
-            new Log { Tipo = "Error", Contenuto = "File non trovato" }
+            new Log { Tipo = "Error",   Contenuto = "File non trovato" }
         };
     }
 
-    void Esporta()
+    private void Esporta()
     {
         // logica export
     }
-
 }

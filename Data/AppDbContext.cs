@@ -1,12 +1,11 @@
 using BlazorServerCPP.Models;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel;
 
 namespace BlazorServerCPP.Data;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
-    public DbSet<User> Users => Set<User>();
+    public DbSet<Utenti> Utenti => Set<Utenti>();
     public DbSet<Clienti> Clienti { get; set; }
     public DbSet<Impianti> Impianti { get; set; }
     public DbSet<Licenze> Licenze { get; set; }
@@ -14,22 +13,33 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<User>(e =>
+        modelBuilder.Entity<Utenti>(entity =>
         {
-            e.ToTable("users");
-            e.HasKey(u => u.Id);
-            e.Property(u => u.Username).HasMaxLength(64).IsRequired();
-            e.HasIndex(u => u.Username).IsUnique();
-            e.Property(u => u.PasswordHash).IsRequired();
+            entity.ToTable("utenti");
+            entity.HasKey(e => e.Id).HasName("utenti_pkey");
+
+            entity.HasIndex(e => e.Username, "utenti_username_key").IsUnique();
+            entity.HasIndex(e => e.Email, "utenti_email_key").IsUnique();
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Username).HasMaxLength(50).HasColumnName("username");
+            entity.Property(e => e.Email).HasMaxLength(255).HasColumnName("email");
+            entity.Property(e => e.PasswordHash).HasMaxLength(255).HasColumnName("password_hash");
+            entity.Property(e => e.Ruolo)
+                .HasMaxLength(20)
+                .HasDefaultValueSql("'user'::character varying")
+                .HasColumnName("ruolo");
+            entity.Property(e => e.DataCreazione)
+                .HasDefaultValueSql("now()")
+                .HasColumnName("data_creazione");
+            entity.Property(e => e.DataUltimoLogin).HasColumnName("data_ultimo_login");
         });
 
-        modelBuilder.Entity<Clienti>()
-            .ToTable("clienti");
+        modelBuilder.Entity<Clienti>().ToTable("clienti");
 
         modelBuilder.Entity<Impianti>(entity =>
         {
             entity.ToTable("impianti");
-
             entity.HasKey(e => e.IdImpianto);
 
             entity.HasOne(e => e.Cliente)
@@ -46,16 +56,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<Licenze>(entity =>
         {
             entity.ToTable("licenze");
-
             entity.HasKey(e => e.IdLicenza);
 
-            // relazione Cliente
             entity.HasOne(e => e.Cliente)
                 .WithMany(c => c.Licenzes)
                 .HasForeignKey(e => e.IdCliente)
                 .HasPrincipalKey(c => c.IdCliente);
 
-            // relazione Impianto
             entity.HasOne(e => e.Impianto)
                 .WithMany(i => i.Licenzes)
                 .HasForeignKey(e => e.IdImpianto)

@@ -1,48 +1,33 @@
 @inherits LayoutComponentBase
-<div class="layout">
 
-    <!-- MENU A SINISTRA -->
-    <div class="sidebar">
+<div class="layout">
+    <aside class="sidebar">
+        <div class="brand">Blazor Server CPP</div>
         <nav>
             <ul>
+                <li><NavLink href="/" Match="NavLinkMatch.All">Home</NavLink></li>
                 <li><NavLink href="/dashboard">Dashboard</NavLink></li>
                 <li><NavLink href="/configurazione">Configurazione</NavLink></li>
                 <li><NavLink href="/log">Log</NavLink></li>
             </ul>
         </nav>
-    </div>
-    
-    <!-- CONTENUTO -->
-    <div class="content">
+
+        <AuthorizeView>
+            <Authorized>
+                <div class="user-box">
+                    <div class="user">
+                        Collegato come
+                        <div class="username">@context.User.Identity?.Name</div>
+                    </div>
+                    <form action="/auth/logout" method="post">
+                        <button type="submit" class="btn-ghost btn-block">Logout</button>
+                    </form>
+                </div>
+            </Authorized>
+        </AuthorizeView>
+    </aside>
+
+    <main class="content">
         @Body
-    </div>
-
+    </main>
 </div>
-
-<style>
-    .layout {
-        display: flex;
-        height: 100vh;
-    }
-
-    .content {
-        flex: 1;
-        padding: 20px;
-    }
-
-    .sidebar {
-        width: 200px;
-        background-color: #f0f0f0;
-        padding: 15px;
-        border-left: 1px solid #ccc;
-    }
-
-    .sidebar ul {
-        list-style: none;
-        padding: 0;
-    }
-
-    .sidebar li {
-        margin-bottom: 10px;
-    }
-</style>
